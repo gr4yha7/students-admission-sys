@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+{% include 'head-tag.twig' %}
+
+<body>
+	<!--Header-->
+	<div class="top-bar_sub_w3layouts_agile">
+		<h6>THE STUDENTS ADMISSION DATABASE</h6>
+		<div class="clearfix"> </div>
+	</div>
+	<div class="header inner_banner" id="home">
+		<!--/top-bar-->
+		<div class="top-bar">
+			<div class="header-nav-agileits">
+
+				<nav class="navbar navbar-default">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+						<h1><a class="navbar-brand" href="index.html">UNICAL <span>Student Admission System</span></a></h1>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+						<nav>
+							<ul class="top_nav">
+								<li><a href="/">Home</a></li>
+								<li><a class="sign" href="/signup">Sign Up</a></li>
+							</ul>
+						</nav>
+					</div>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+
+	{% if signupSuccess %}
+	<div class="alert alert-success text-center" role="alert">
+	  <h4 class="alert-heading">{{signupSuccess}}</h4>
+	  <p>Thank you for signing up. Please login to continue</p>
+	</div>
+	{% endif %}
+
+	<!--//Header-->
+	<!--/inner_connectent-->
+	<div class="banner_bottom">
+		<div class="container">
+			<h3 class="headerw3 text-center">Log In</h3>
+			<div class="inner_sec_w3_agileinfo">
+				<div class="register-form">
+					<form action="/inc/controllers/login.php" method="post">
+						<div class="fields-grid">
+							{% if loginError %}
+								<p class="login error">
+									{{loginError}}
+								</p>
+							{% endif %}
+							<div class="styled-input">
+								<input type="email" placeholder="E-mail Address" name="email" value="{{ email }}" required="" autofocus="">
+							</div>
+							<div class="styled-input">
+								<input type="password" placeholder="Password" name="password" value="{{ password }}" required="required">
+							</div>
+							<div class="clearfix"> </div>
+						</div>
+						<input type="submit" name="login" value="LOGIN">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--//inner_connectent-->
+{% include 'footer.twig' %}
+
+
+	<!-- js -->
+	<script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+	
+	<!-- //js -->
+	<!--search-bar-->
+	<script src="js/main.js"></script>
+	<!--//search-bar-->
+	<!-- start-smoth-scrolling -->
+	<script type="text/javascript" src="js/move-top.js"></script>
+	<script type="text/javascript" src="js/easing.js"></script>
+	<script type="text/javascript">
+		jQuery(document).ready(function ($) {
+			$(".scroll").click(function (event) {
+				event.preventDefault();
+				$('html,body').animate({
+					scrollTop: $(this.hash).offset().top
+				}, 900);
+			});
+		});
+	</script>
+	<!-- start-smoth-scrolling -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+			/*
+									var defaults = {
+							  			containerID: 'toTop', // fading element id
+										containerHoverID: 'toTopHover', // fading element hover id
+										scrollSpeed: 1200,
+										easingType: 'linear' 
+							 		};
+									*/
+
+			$().UItoTop({
+				easingType: 'easeOutQuart'
+			});
+
+		});
+	</script>
+	<a href="#" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+	<script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+{% include 'head-tag.twig' %}
+
+<body>
+	<!--Header-->
+	<div class="top-bar_sub_w3layouts_agile">
+		<h6>THE STUDENTS ADMISSION DATABASE</h6>
+		<div class="clearfix"> </div>
+	</div>
+	<div class="header inner_banner" id="home">
+		<!--/top-bar-->
+		<div class="top-bar">
+			<div class="header-nav-agileits">
+
+				<nav class="navbar navbar-default">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+						<h1><a class="navbar-brand" href="index.html">UNICAL <span>Student Admission System</span></a></h1>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+						<nav>
+							<ul class="top_nav">
+								<li><a href="/">Home</a></li>
+								<li><a class="sign" href="/login">Login</a></li>
+							</ul>
+						</nav>
+					</div>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+
+	<!--//Header-->
+	<!--/inner_connectent-->
+	<div class="banner_bottom">
+		<div class="container">
+			<h3 class="headerw3 text-center">Create Account</h3>
+			<div class="inner_sec_w3_agileinfo">
+				<div class="register-form">
+					<form id="signup-form" action="/inc/controllers/signup.php" method="post">
+						<div class="fields-grid">
+							<div class="styled-input">
+								<input type="text" placeholder="Surname" name="surname" required="" autofocus="">
+								<input type="text" name="firstname" placeholder="First Name" required="">
+							</div>
+							<div class="styled-input">
+								<input type="email" placeholder="E-mail Address" name="email" required="">
+								<small id="passwordHelp" class="form-text text-muted">* Password must be at least 6 characters long</small>
+							</div>
+							<div class="styled-input">
+								<p id="pwd-len" class="font-italic" style="color: #ed5454; display: none;">Password must have at least 6 characters</p>
+								<input type="password" id="pwd" placeholder="Password" name="password" required="required"  aria-describedby="passwordHelp">
+							</div>
+							<div class="styled-input">
+								<p id="pwd-match" class="font-italic" style="color: #ed5454; display: none;">Passwords don't match</p>
+								<input type="password" id="confirm-pwd" placeholder="Confirm Password" name="passwordConfirm" required="required">
+							</div>
+							<div class="styled-input">
+								<input type="text" placeholder="Phone Number" name="phone" maxlength="11" required="">
+							</div>
+							<div class="styled-input agile-styled-input-top">
+								<select name="gender" class="category2" required="">
+									<option>Gender</option>
+									<option value="Female">Female</option>
+									<option value="Male">Male</option>
+									<option value="Other">Other</option>
+								</select>
+							</div>
+							<div class="clearfix"> </div>
+						</div>
+						<input id="btnRegister" type="submit" name="register" value="REGISTER">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--//inner_connectent-->
+{% include 'footer.twig' %}
+
+
+	<!-- js -->
+	<script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+	<!-- //js -->
+	<!--search-bar-->
+	<script src="js/main.js"></script>
+	<!--//search-bar-->
+	<!-- start-smoth-scrolling -->
+	<script type="text/javascript" src="js/move-top.js"></script>
+	<script type="text/javascript" src="js/easing.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#pwd').change(function() {
+				var password = $(this).val();
+				if(password.length < 6) {
+					$('#pwd-len').css("display", "inline");
+				}
+				else {
+					$('#pwd-len').css("display", "none");
+				}
+			})
+			$('#confirm-pwd').change(function() {
+				var confirmPwd = $(this).val();
+				var pwd = $('#pwd').val();
+				
+				if(confirmPwd !== pwd) {
+					$('#pwd-match').css("display", "inline");
+				}
+				else {
+					$('#pwd-match').css("display", "none");
+				}
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		jQuery(document).ready(function ($) {
+			$(".scroll").click(function (event) {
+				event.preventDefault();
+				$('html,body').animate({
+					scrollTop: $(this.hash).offset().top
+				}, 900);
+			});
+		});
+	</script>
+	<!-- start-smoth-scrolling -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$().UItoTop({
+				easingType: 'easeOutQuart'
+			});
+
+		});
+	</script>
+	<a href="#" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+	<script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+
+
+</body>
+
+</html>

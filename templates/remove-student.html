@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+{% embed 'admin-head-tag.twig' %}
+
+{% block title %}Remove Student{% endblock %}
+{% endembed %}
+<link rel="stylesheet" href="css/waitMe.min.css">
+
+<body>
+	{% include 'nav.twig' %}
+	{% include 'sidebar.twig' %}
+
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Students</li>
+			</ol>
+		</div>
+			
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header">Remove Student</h2>
+			</div>
+		</div>
+
+		<div class="container search-bar">
+			<form id="search-form">
+				<div class="form-row col-lg-12">
+					
+					<div class="form-group col-lg-4">
+						<input id="searchInput" type="text" class="form-control" placeholder="Search" autofocus="">
+					</div>
+					<div class="form-group col-lg-4">
+						<select id="search-option" class="form-control col-lg-4">
+							<option selected="" value="name">By Name</option>
+							<option value="regNo">By Reg. No.</option>
+						</select>
+					</div>
+					<div class="form-group col-lg-2">
+						<input id="search" type="submit" class="btn btn-primary form-control" value="Search">
+					</div>
+				</div>
+			</form>
+		</div><br><br>
+		<div id="details">
+			<div id="profile-pic" class="container">
+			</div><br>
+			<div id="info">
+				<p><label>Status :&nbsp;</label>Admitted <span class="fa fa-2x fa-check-square-o" style="color: #1ae015;"></span>
+				</p>
+			</div>
+		</div><br>
+		<div id="options" class="row text-center">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">
+				<span class="fa fa-trash"></span> Remove Student
+			</button>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+			<div class="modal-dialog text-center" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="modalLabel">Confirm</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        <h5>Are you sure you want to remove this student?</h5>
+			      </div>
+			      <div class="modal-footer">
+			        <form method="post" action="/inc/controllers/remove-student.php">
+			      		<input id="srParam" type="hidden" name="param">
+			      		<input id="srOption" type="hidden" name="option">
+			        	<button type="submit" name="submit" class="btn btn-primary">Yes</button>
+			        	<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			    	</form>
+			      </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% include 'scripts.twig' %}
+	<script src="js/waitMe.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var port = 5555;
+
+			$('#details').css("display", "none");
+			$('#options').css("display", "none");
+
+			$('#search-form').submit(function(event) {
+				event.preventDefault();
+				$('#studentData').empty();
+				$('body').waitMe({
+					effect: 'ios',
+					text: 'Searching...',
+					bg: 'rgba(255,255,255,0.6)',
+					color: '#000',
+					maxSize: '',
+					waitTime: 2000,
+					textPos: 'horizontal',
+					fontSize: '18px',
+					source: '',
+					onClose: function() {
+						$('#details').css("display", "block");
+						$('#options').css("display", "block");
+					}
+				});
+				var searchParam = $('#searchInput').val();
+				$('#srParam').val(`${searchParam}`);
+
+				var searchOption = $('#search-option').val();
+				$('#srOption').val(`${searchOption}`);
+				
+				var obj = {param : searchParam, option : searchOption};
+				
+				var urlParam = JSON.stringify(obj);
+				
+				
+				$.ajax({
+					method: "GET",
+					url: `http://localhost:${port}/inc/controllers/get-students-data.php?param=${urlParam}`,
+					dataType: "json"
+				}).then(
+					function(data) {
+						$('#profile-pic').css("background-image", `url(${data.photo})`);
+						$('#info').append(`<p><label>Name :</label> ${data.name}</p>`);
+						$('#info').append(`<p><label>Registration Number :</label> ${data.regNo}</p>`);
+						$('#info').append(`<p><label>Department :</label> ${data.department}</p>`);
+						$('#info').append(`<p><label>Faculty :</label> ${data.faculty}</p>`);
+						$('#info').append(`<p><label>Mode Of Entry :</label> ${data.entryType}</p>`);
+						$('#info').append(`<p><label>Year Of Admission :</label> ${data.admissionYear}</p>`);
+						$('#info').append(`<p><label>Program :</label> ${data.degreeProgram}</p>`);
+						$('#info').append(`<p><label>Date Of Birth :</label> ${data.dob}</p>`);
+						$('#info').append(`<p><label>Gender :</label> ${data.gender}</p>`);
+						$('#info').append(`<p><label>State Of Origin :</label> ${data.stateOfOrigin}</p>`);
+						$('#info').append(`<p><label>Local Government Area :</label> ${data.lga}</p>`);
+						$('#info').append(`<p><label>Blood Group :</label> ${data.bloodGroup}</p>`);
+						$('#info').append(`<p><label>Religion :</label> ${data.religion}</p>`);
+						$('#info').append(`<p><label>E-mail Address :</label> ${data.email}</p>`);
+						$('#info').append(`<p><label>Phone Number :</label> ${data.phone}</p>`);
+					},
+					function(error) {
+						alert(error);
+					}
+				);
+
+			});
+		});	
+	</script>
+</body>
+</html>

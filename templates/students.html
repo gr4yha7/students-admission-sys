@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+{% embed 'admin-head-tag.twig' %}
+
+{% block title %}Students{% endblock %}
+{% endembed %}
+
+<body>
+	{% include 'nav.twig' %}
+	{% include 'sidebar.twig' %}
+	
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Students</li>
+			</ol>
+		</div>
+			
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header">View Students</h2>
+			</div>
+		</div>
+
+		<div id="db-table">
+			<table class="table table-hover table-bordered table-responsive">
+				<caption class="text-center"><h4>ADMITTED STUDENTS</h4></caption>
+				<thead>
+					<tr>
+						<th scope="col">S/N</th>
+						<th scope="col">Name</th>
+						<th scope="col">Reg. No.</th>
+						<th scope="col">Department</th>
+						<th scope="col">Faculty</th>
+						<th scope="col">Program</th>
+						<th scope="col">Gender</th>
+						<th scope="col">Mode Of Entry</th>
+					</tr>
+				</thead>
+				<tbody id="studentData">
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{% include 'scripts.twig' %}
+	<script type="text/javascript">
+		var port = 5555;
+		let count = 0;
+		$.ajax({
+			method: "GET",
+			url: `http://localhost:${port}/inc/controllers/get-students.php`,
+			dataType : "json"
+		}).then(
+		function(data) {
+			$.each(data, function(key, obj) {
+				++count;
+				$('#studentData').append(
+					`<tr>
+						<td>${count}</td>
+						<td>${obj.name}</td>
+						<td>${obj.regNo}</td>
+						<td>${obj.department}</td>
+						<td>${obj.faculty}</td>
+						<td>${obj.degreeProgram}</td>
+						<td>${obj.gender}</td>
+						<td>${obj.entryType}</td>
+					</tr>`
+				);
+			});
+			
+		},
+		function(errorThrown) {
+			alert(errorThrown);
+		});
+	</script>
+</body>
+</html>

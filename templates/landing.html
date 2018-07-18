@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+{% include 'head-tag.twig' %}
+<body>
+	<!--Header-->
+	<div class="top-bar_sub_w3layouts_agile">
+		<h6>THE STUDENTS ADMISSION DATABASE</h6>
+		<div class="clearfix"> </div>
+	</div>
+	<div class="header inner_banner" id="home">
+		<!--/top-bar-->
+		<div class="top-bar">
+			<div class="header-nav-agileits">
+
+				<nav class="navbar navbar-default">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+						<h1><a class="navbar-brand" href="index.html">UNICAL <span>Student Admission System</span></a></h1>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+						<nav>
+							<ul class="top_nav">
+								<li><a href="/index">Home</a></li>
+								<li><a class="sign" href="/inc/controllers/logout.php">Logout</a></li>
+							</ul>
+						</nav>
+					</div>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+
+	
+	<div class="container search-bar">
+		<form id="search-form">
+			<div class="form-row col-lg-12">
+					<div class="form-group col-lg-4">
+						<input type="text" class="form-control" id="searchInput" placeholder="Search" autofocus="">
+					</div>
+					<div class="form-group col-lg-4">
+						<select id="search-option" class="form-control col-lg-4">
+						<option selected value="name">By Name</option>
+						<option value="regNo">By Reg. no.</option>
+						<option value="dept">By Department</option>
+						<option value="faculty">By Faculty</option>
+						</select>
+					</div>
+					<div class="form-group col-lg-2">
+						<button type="submit" name="search" class="btn btn-primary form-control">Search</button>
+					</div>
+			</div>
+		</form>
+	</div>
+	<div id="view-all" class="text-center">
+		<button id="toggle-table" type="button" class="btn btn-primary">View All Admitted Students</button>
+	</div><br><br>
+	<div id="details">
+		<div id="profile-pic" class="container">
+		</div><br>
+		<div id="info">
+		</div>
+	</div><br>
+	<div id="db-table" class="container">
+		<table class="table table-hover table-bordered table-responsive">
+			<caption class="text-center"><h4>ADMITTED STUDENTS</h4></caption>
+			<thead>
+				<tr>
+					<th scope="col">S/N</th>
+					<th scope="col">Name</th>
+					<th scope="col">Reg. No.</th>
+					<th scope="col">Department</th>
+					<th scope="col">Faculty</th>
+					<th scope="col">Program</th>
+					<th scope="col">Gender</th>
+					<th scope="col">Year Of Admission</th>
+				</tr>
+			</thead>
+			<tbody id="studentData">
+			</tbody>
+		</table>
+	</div>
+	<!-- js -->
+	<script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+	<!-- //js -->
+	<script src="js/main.js"></script>
+	<script src="js/responsiveslides.min.js"></script>
+	<script src="js/waitMe.min.js"></script>
+
+	<script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var port = 5555;
+
+			$('#db-table').css('display', 'none');
+			$('#details').css("display", "none");
+
+			$('#toggle-table').click(function(evt) {
+				$('#view-all').css('display', 'none');
+				$('body').waitMe({
+					effect: 'facebook',
+					text: 'Loading...',
+					bg: 'rgba(255,255,255,0.6)',
+					color: '#000',
+					maxSize: '',
+					waitTime: 1000,
+					textPos: 'horizontal',
+					fontSize: '18px',
+					source: '',
+					onClose: function() {
+						$('#studentData').empty();
+						let count = 0;
+						$.ajax({
+							method: "GET",
+							url: `http://localhost:${port}/inc/controllers/get-students.php`,
+							dataType : "json"
+						}).then(
+						function(data) {
+							$.each(data, function(key, obj) {
+								++count;
+								$('#studentData').append(
+									`<tr>
+										<td>${count}</td>
+										<td>${obj.name}</td>
+										<td>${obj.regNo}</td>
+										<td>${obj.department}</td>
+										<td>${obj.faculty}</td>
+										<td>${obj.degreeProgram}</td>
+										<td>${obj.gender}</td>
+										<td>${obj.admissionYear}</td>
+									</tr>`
+								);
+							});
+							
+						},
+						function(errorThrown) {
+							alert(errorThrown);
+						});
+						$('#db-table').css('display','block');
+					}
+				});
+			});
+
+			$('#search-form').submit(function(event) {
+				event.preventDefault();
+
+				var searchParam = $('#searchInput').val();
+				var searchOption = $('#search-option').val();
+				
+				var obj = {param : searchParam, option : searchOption};
+				
+				var urlParam = JSON.stringify(obj);
+				
+
+				$('body').waitMe({
+					effect: 'rotation',
+					text: 'Searching...',
+					bg: 'rgba(255,255,255,0.6)',
+					color: '#286090',
+					maxSize: '',
+					waitTime: 1000,
+					textPos: 'horizontal',
+					fontSize: '18px',
+					source: '',
+					onClose: function() {
+						$('#view-all').css('display', 'none');
+						$('caption').css('display', 'none');
+					}
+				});
+
+				$.ajax({
+							method: "GET",
+							url: `http://localhost:${port}/inc/controllers/get-students-data.php?param=${urlParam}`,
+							dataType: "json"
+						}).then(
+							function(data) {
+								let count = 0;
+								if (searchOption === 'name' || searchOption === 'regNo') {
+									$('#info').empty();
+									$('#db-table').css('display', 'none');
+									$('#details').css('display','block');
+									$('#profile-pic').css("background-image", `url(${data.photo})`);
+									$('#info').append('<p><label>Status :&nbsp;</label>Admitted <span class="fa fa-2x fa-check-square-o" style="color: #1ae015;"></span></p>');
+									$('#info').append(`<p><label>Name :</label> ${data.name}</p>`);
+									$('#info').append(`<p><label>Registration Number :</label> ${data.regNo}</p>`);
+									$('#info').append(`<p><label>Department :</label> ${data.department}</p>`);
+									$('#info').append(`<p><label>Faculty :</label> ${data.faculty}</p>`);
+									$('#info').append(`<p><label>Mode Of Entry :</label> ${data.entryType}</p>`);
+									$('#info').append(`<p><label>Year Of Admission :</label> ${data.admissionYear}</p>`);
+									$('#info').append(`<p><label>Program :</label> ${data.degreeProgram}</p>`);
+									$('#info').append(`<p><label>Date Of Birth :</label> ${data.dob}</p>`);
+									$('#info').append(`<p><label>Gender :</label> ${data.gender}</p>`);
+									$('#info').append(`<p><label>State Of Origin :</label> ${data.stateOfOrigin}</p>`);
+									$('#info').append(`<p><label>Local Government Area :</label> ${data.lga}</p>`);
+									$('#info').append(`<p><label>Blood Group :</label> ${data.bloodGroup}</p>`);
+									$('#info').append(`<p><label>Religion :</label> ${data.religion}</p>`);
+									$('#info').append(`<p><label>E-mail Address :</label> ${data.email}</p>`);
+									$('#info').append(`<p><label>Phone Number :</label> ${data.phone}</p>`);
+
+								}
+								else if (searchOption === 'dept' || searchOption === 'faculty') {
+									$('#studentData').empty();
+									$('#details').css('display','none');
+									$('#db-table').css('display','block');
+									$.each(data, function(k, obj) {
+										++count;
+										$('#studentData').append(
+										`<tr>
+											<td>${count}</td>
+											<td>${obj.name}</td>
+											<td>${obj.regNo}</td>
+											<td>${obj.department}</td>
+											<td>${obj.faculty}</td>
+											<td>${obj.degreeProgram}</td>
+											<td>${obj.gender}</td>
+											<td>${obj.admissionYear}</td>
+										</tr>`
+										);
+									});
+									
+								}
+								else {
+									alert('Something went wrong!');
+								}
+								
+							},
+							function(error) {
+								alert(error);
+							}
+						);
+						
+
+			});
+		});
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+{% embed 'admin-head-tag.twig' %}
+
+{% block title %}Student Information{% endblock %}
+{% endembed %}
+
+<body>
+	{% include 'nav.twig' %}
+	{% include 'sidebar.twig' %}
+
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Students</li>
+			</ol>
+		</div>
+			
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header">Student Information</h2>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div id="profile-pic" class="col-md-6"></div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-primary btn-outline">
+							Edit <span class="fa fa-pencil"></span>
+						</button>
+						<button type="submit" class="btn btn-primary btn-outline">
+							Remove<span class="fa fa-trash"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div id="admission-info">
+				<legend class="col-form-label col-sm-2 pt-0">Admission&nbsp;Details</legend>
+			</div>
+			<div id="personal-info">
+				<legend class="col-form-label col-sm-2 pt-0">Personal&nbsp;Details</legend>
+			</div>
+		</div>
+	</div>
+
+	{% include 'scripts.twig' %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var port = 5555;
+			$.ajax({
+					method: "GET",
+					url: `http://localhost:${port}/inc/controllers/get-data.php`,
+					data: urlParam
+					dataType: "json"
+				}).then(
+					function(data) {
+						alert(data);
+					},
+					function(error) {
+						alert(error);
+					}
+				);
+		});
+	</script>
+</body>
+</html>

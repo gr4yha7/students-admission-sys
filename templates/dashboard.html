@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+{% include 'admin-head-tag.twig' %}
+
+<body>
+	{% include 'nav.twig' %}
+	{% include 'sidebar.twig' %}
+
+	{% if success is defined %}
+	<div class="alert alert-success text-center" role="alert">
+		<h4 class="alert-heading">{{ success }}</h4>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	{% endif %}
+	{% if failure is defined %}
+	<div class="alert alert-danger text-center" role="alert">
+		<h4 class="alert-heading">{{ failure }}</h4>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	{% endif %}
+
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Dashboard</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Dashboard</h1>
+			</div>
+		</div><!--/.row-->
+		
+		<div class="panel panel-container">
+			<div class="row">
+				<div class="col-xs-6 col-md-3 col-lg-6 no-padding">
+					<div class="panel panel-blue panel-widget border-right">
+						<div class="row no-padding"><em class="fa fa-xl fa-user color-blue"></em>
+							<div id="noStudents" class="large"></div>
+							<div class="text-muted">Students</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3 col-lg-6 no-padding">
+					<div class="panel panel-red panel-widget ">
+						<div class="row no-padding"><em class="fa fa-xl fa-users color-red"></em>
+							<div id="noUsers" class="large"></div>
+							<div class="text-muted">Users</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	{% include 'scripts.twig' %}
+	<script type="text/javascript">
+		var port = 5555;
+		let noOfStudents = 0;
+		$.ajax({
+			method: "GET",
+			url: `http://localhost:${port}/inc/controllers/get-no-of-students.php`,
+			dataType : "json"
+		}).then(
+		function(data) {
+			$('#noStudents').text(`${data}`);
+		},
+		function(errorThrown) {
+			alert(errorThrown);
+		}
+		);
+	</script>
+		<script type="text/javascript">
+		var port = 5555;
+		let noOfUsers = 0;
+		$.ajax({
+			method: "GET",
+			url: `http://localhost:${port}/inc/controllers/get-no-of-users.php`,
+			dataType : "json"
+		}).then(
+		function(data) {
+			$('#noUsers').text(`${data}`);
+		},
+		function(errorThrown) {
+			alert(errorThrown);
+		}
+		);
+	</script>
+
+
+		
+</body>
+</html>

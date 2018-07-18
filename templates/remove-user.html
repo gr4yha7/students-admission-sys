@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+{% embed 'admin-head-tag.twig' %}
+
+{% block title %}Remove User{% endblock %}
+{% endembed %}
+<link rel="stylesheet" href="css/waitMe.min.css">
+
+<body>
+	{% include 'nav.twig' %}
+	{% include 'sidebar.twig' %}
+
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Users</li>
+			</ol>
+		</div>
+			
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="page-header">Remove User</h2>
+			</div>
+		</div>
+
+		<div class="container search-bar">
+			<form id="search-form">
+				<div class="form-row col-lg-12">
+					<div class="form-row">
+						<div class="form-group col-lg-4">
+							<input id="searchInput" type="text" class="form-control" name="search" placeholder="Search" autofocus="" required="">
+						</div>
+						<div class="form-group col-lg-4">
+							<select id="search-option" name="search-options" class="form-control col-lg-4">
+							<option selected value="username">By Name</option>
+							<option value="email">By Email</option>
+							</select>
+						</div>
+						<div class="form-group col-lg-2">
+							<button id="search" type="submit" name="search" class="btn btn-primary form-control">Search</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div><br><br>
+	
+		<div id="db-table">
+			<table class="table table-hover table-bordered table-responsive">
+				<thead>
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Email Address</th>
+						<th scope="col">Phone Number</th>
+						<th scope="col">Gender</th>
+					</tr>
+				</thead>
+				<tbody id="userData">
+				</tbody>
+			</table>
+		</div>
+		<div id="options" class="row text-center">
+			<div class="col-md-4">
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">
+					<span class="fa fa-trash"></span> Remove User
+				</button>
+			</div>
+			<div class="col-md-4">
+				<a href="/dashboard" class="btn btn-danger"><span class="fa fa-times"></span> Cancel</a>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+			<div class="modal-dialog text-center" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="modalLabel">Confirm</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        <h5>Are you sure you want to remove this user?</h5>
+			      </div>
+			      <div class="modal-footer">
+			      	<form method="post" action="/inc/controllers/remove-user.php">
+			      		<input id="srParam" type="hidden" name="param">
+			      		<input id="srOption" type="hidden" name="option">
+			        	<button type="submit" name="submit" class="btn btn-primary">Yes</button>
+			        	<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			    	</form>
+			      </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% include 'scripts.twig' %}
+	<script src="js/waitMe.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var port = 5555;
+			var postData;
+
+			$('#db-table').css("display", "none");
+			$('#options').css("display", "none");
+
+			$('#search-form').submit(function(event) {
+				event.preventDefault();
+				$('body').waitMe({
+					effect: 'ios',
+					text: 'Searching...',
+					bg: 'rgba(255,255,255,0.6)',
+					color: '#000',
+					maxSize: '',
+					waitTime: 2000,
+					textPos: 'horizontal',
+					fontSize: '18px',
+					source: '',
+					onClose: function() {
+						$('#db-table').css('display','block');
+						$('#options').css("display", "block");
+					}
+				});
+				var searchParam = $('#searchInput').val();
+				$('#srParam').val(`${searchParam}`);
+
+				var searchOption = $('#search-option').val();
+				$('#srOption').val(`${searchOption}`);
+				
+				var obj = {param : searchParam, option : searchOption};
+				
+				postData = obj;
+				var urlParam = JSON.stringify(obj);
+				
+				
+				$.ajax({
+					method: "GET",
+					url: `http://localhost:${port}/inc/controllers/get-user-data.php?param=${urlParam}`
+				}).then(
+					function(data) {
+						$('#userData').append(
+							`<tr>
+								<td>${data.name}</td>
+								<td>${data.email}</td>
+								<td>${data.phone}</td>
+								<td>${data.gender}</td>
+							</tr>`
+						);
+					},
+					function(error) {
+						alert(error);
+					}
+				);
+
+				$.ajax({
+					url: `http://localhost:${port}/templates/dashboard.html`
+				}).then(
+					function(data) {
+						alert(data);
+						var doc = new Document();
+						doc = data;
+						alert(doc.querySelector('h1'));
+					},
+					function(error) {
+						alert(error.code);
+					}
+				)
+
+			});
+
+			
+		});	
+	</script>
+</body>
+</html>
